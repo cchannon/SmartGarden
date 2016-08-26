@@ -55,7 +55,7 @@ namespace SmartGarden
 
             _waterControl.InitializeSolenoid();
 
-            Timer = new Timer(GardenProcessor, this, 0, 6000000);
+            Timer = new Timer(GardenProcessor, this, 0, 3600000);  //approx. 1 hour loops
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace SmartGarden
         {
             var baseline = GetBaseline();
 
-            var thisMeasure = await GetMeasures(0);
+            string thisMeasure = await GetMeasures(0);
             
             await RecordMeasurements(thisMeasure);
 
@@ -100,7 +100,7 @@ namespace SmartGarden
                 temp = float.Parse(mArray[4]);
             }
 
-            _fanControl.SetFan(temp > 32);
+            _fanControl.SetFan(temp > 32); // initialize fan if over 32C
 
             foreach (float meas in currentMoisture)
             {
@@ -108,7 +108,7 @@ namespace SmartGarden
                 if (meas > 0) workingSensors += workingSensors;
             }
 
-            if (workingSensors == 0)
+            if (workingSensors == 0) //abort if all sensors register zero
             {
                 throw(new Exception("Sensors disconnected. Execution aborted."));
             }
@@ -118,7 +118,7 @@ namespace SmartGarden
             if (currentAvg/baselineAvg <= .1)
             {
                 _waterControl?.WaterTheGarden();
-                await Task.Delay(120000);
+                await Task.Delay(60000); //approx. 1 minute watering time
                 await RecordMeasurements(await GetMeasures(1));
             }
 
