@@ -65,6 +65,9 @@ namespace SmartGarden
         /// <param name="state"></param>
         private async void GardenProcessor(object state)
         {
+            
+//TODO: Implement timecheck to validate >1hr after last recorded measurement
+
             var baseline = GetBaseline();
 
             string thisMeasure = await GetMeasures(0);
@@ -132,6 +135,8 @@ namespace SmartGarden
         /// <returns></returns>
         private static IEnumerable<float> GetBaseline()
         {
+//TODO: implement logic to read historical measurements from Azure blob storage
+
             try
             {
                 var measurements = Convert.ToString(ReadStringFromLocalFile("Measurements.txt"));
@@ -209,6 +214,8 @@ namespace SmartGarden
         /// <returns></returns>
         public async Task RecordMeasurements(string thisMeasure)
         {
+//TODO: add timestamps to measurements
+//TODO: implement logic to transmit all measurements to Azure blob storage
             try
             {
                 var oldMeasurements = Convert.ToString(await ReadStringFromLocalFile("Measurements.txt"));
